@@ -1,6 +1,4 @@
-import mysql.connector
-from mysql.connector import Error
-
+import sqlite3
 import os
 
 # Add to os environmental var DB_name, DB_login, DB_server, DB_pass
@@ -20,29 +18,21 @@ class UserDataManager:
         self.connection = self.__connect()
         self.cursor = self.connection.cursor()
 
-    def execute_query(connection, query):
-        connection.autocommit = True
-        cursor = connection.cursor()
-        try:
-            cursor.execute(query)
-            print("Query executed successfully")
-        except OperationalError as e:
-            print(f"The error '{e}' occurred")
+    def execute_query(self):
+        # TODO
+        pass
 
     def __connect(self):
         """Connect to remote DB server. Raise Error if some troubles."""
-        connection = mysql.connector.connect(
-            host=self.DB_server,
-            user=self.DB_login,
-            passwd=self.DB_pass,
-        )
-        print("Connection to MySQL DB successfully")
-        return connection
+        conn = sqlite3.connect(self.DB_name)
+        return conn
 
     def add_new_user(self, user_id, user_name, status="waiting_name"):
         """Register new purple in system"""
-        pass
-        # TODO
+        status_equation = {"waiting_name": 0, "waiting_start": 1, "waiting_check": 2}
+        status_value = status_equation[status]
+        self.cursor.execute(f"INSERT INTO users ({user_id}, {user_name}, {status_value})")
+        self.connection.commit()
 
     def add_check_in(self, user_id, time0, time1, place):
         """Add check in to user id from time0 to time 1"""
@@ -53,4 +43,3 @@ class UserDataManager:
         """Connect user id to real purple name"""
         pass
         # TODO
-
