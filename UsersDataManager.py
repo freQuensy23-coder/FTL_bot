@@ -1,8 +1,6 @@
 import sqlite3
 import os
 
-# Add to os environmental var DB_name, DB_login, DB_server, DB_pass
-
 name = "data.db"
 
 
@@ -12,23 +10,19 @@ class UserDataManager:
         self.connection = self.__connect()
         self.cursor = self.connection.cursor()
 
-    def execute_query(self):
-        # TODO
-        pass
-
     def __connect(self):
         """Connect to  DB . Raise Error if some troubles."""
         conn = sqlite3.connect(self.DB_name)
         return conn
 
-    def add_new_user(self, id, user_id, user_name = "UNASSIGNED", status="waiting_name"):
+    def add_new_user(self, id, user_id, user_name="UNASSIGNED", status="waiting_name"):
         """Register new purple in system"""
         status_equation = {"waiting_name": 0, "waiting_start": 1, "waiting_check": 2}
         status_value = status_equation[status]
         self.cursor.execute(f"INSERT INTO users ({id}, {user_id}, '{user_name}', {status_value})")
         self.connection.commit()
 
-    def add_check_in(self, id, user_id, time0, time1, place, status = True):
+    def add_check_in(self, id, user_id, time0, time1, place, status=True):
         """Add check in to user id from time0 to time 1"""
         status_equation = {True: 1, False: 0}
         status_value = status_equation[status]
@@ -54,4 +48,16 @@ class UserDataManager:
         return self.cursor.fetchall()[0]
 
     def get_user_id_status(self, user_id):
-        return self.get_user_data(user_id)[-1]
+        return self.get_user_id_data(user_id)[-1]
+
+    def get_all_users_data(self):
+        self.cursor.execute(f"""SELECT * from users""")
+        return self.cursor.fetchall()
+
+    def set_user_status(self, user_id, status):
+        self.cursor.execute(f"""
+            UPDATE users
+            SET status = '{status}'
+            WHERE user_id = {user_id}
+    """)
+        self.connection.commit()
