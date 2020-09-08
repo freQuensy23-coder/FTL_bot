@@ -41,4 +41,16 @@ class UserDataManager:
 
     def add_new_user(self, user_id, user_name, status="waiting_name"):
         """Register new purple in system"""
+        pass
+        # TODO
+
+    def add_check_in(self, user_id, time0, time1, place):
+        """Add check in to user id from time0 to time 1"""
+        pass
+        # TODO
+
+    def add_user_name(self, user_id, name):
+        """Connect user id to real purple name"""
+        pass
+        # TODO
 
