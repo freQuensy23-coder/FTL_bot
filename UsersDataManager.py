@@ -52,3 +52,6 @@ class UserDataManager:
     def get_user_id_data(self, user_id):
         self.cursor.execute(f"""SELECT * from users WHERE user_id = {user_id}""")
         return self.cursor.fetchall()[0]
+
+    def get_user_id_status(self, user_id):
+        return self.get_user_data(user_id)[-1]
