@@ -23,23 +23,34 @@ class UserDataManager:
         pass
 
     def __connect(self):
-        """Connect to remote DB server. Raise Error if some troubles."""
+        """Connect to  DB . Raise Error if some troubles."""
         conn = sqlite3.connect(self.DB_name)
         return conn
 
-    def add_new_user(self, user_id, user_name, status="waiting_name"):
+    def add_new_user(self, id, user_id, user_name = "UNASSIGNED", status="waiting_name"):
         """Register new purple in system"""
         status_equation = {"waiting_name": 0, "waiting_start": 1, "waiting_check": 2}
         status_value = status_equation[status]
-        self.cursor.execute(f"INSERT INTO users ({user_id}, {user_name}, {status_value})")
+        self.cursor.execute(f"INSERT INTO users ({id}, {user_id}, '{user_name}', {status_value})")
         self.connection.commit()
 
-    def add_check_in(self, user_id, time0, time1, place):
+    def add_check_in(self, id, user_id, time0, time1, place, status = True):
         """Add check in to user id from time0 to time 1"""
-        pass
-        # TODO
+        status_equation = {True: 1, False: 0}
+        status_value = status_equation[status]
+        self.cursor.execute(f"INSERT INTO checks ({id}, {user_id}, '{place}', '{time0}','{time1}', {status_value})")
+        self.connection.commit()
 
     def add_user_name(self, user_id, name):
         """Connect user id to real purple name"""
-        pass
-        # TODO
+        self.cursor.execute(f"""UPDATE users
+                            SET name = '{name}'
+                            WHERE user_id = {user_id}
+                            """)
+
+    def change_name(self, user_id, new_name):
+        """Change user_id's name"""
+        self.cursor.execute(f"""UPDATE users
+                            SET name = '{new_name}'
+                            WHERE user_id = {user_id}
+                            """)
