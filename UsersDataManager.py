@@ -3,17 +3,11 @@ import os
 
 # Add to os environmental var DB_name, DB_login, DB_server, DB_pass
 
-DB_name = os.getenv("DB_name")
-DB_login = os.getenv("DB_login")
-DB_server = os.getenv("DB_server")
-DB_pass = os.getenv("DB_pass")
+name = "data.db"
 
 
 class UserDataManager:
-    def __init__(self, DB_name=DB_name, DB_login=DB_login, DB_server=DB_server, DB_pass=DB_pass):
-        self.DB_pass = DB_pass
-        self.DB_login = DB_login
-        self.DB_server = DB_server
+    def __init__(self, DB_name=name):
         self.DB_name = DB_name
         self.connection = self.__connect()
         self.cursor = self.connection.cursor()
@@ -54,3 +48,7 @@ class UserDataManager:
                             SET name = '{new_name}'
                             WHERE user_id = {user_id}
                             """)
+
+    def get_user_id_data(self, user_id):
+        self.cursor.execute(f"""SELECT * from users WHERE user_id = {user_id}""")
+        return self.cursor.fetchall()[0]
